@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# Full-resolution source photos — not needed by the site (16 MB)
+assets/people_raw/
+
+# Local scratch
+*.bak

@@ -350,9 +350,42 @@ p { text-wrap: pretty; }
 }
 .person-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 
+/* ═══════════════════════ SCHEDULE ═══════════════════════ */
+.sched { margin-top: 4px; }
+
+.sched-head { display: flex; align-items: center; gap: 14px; margin: 46px 0 6px; }
+.sched-head:first-child { margin-top: 0; }
+.sched-head span {
+  font-size: .72rem; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--brass); white-space: nowrap;
+}
+.sched-head::after { content: ''; flex: 1; height: 1px; background: var(--line-2); }
+
+.sched-row {
+  display: grid; grid-template-columns: 172px 1fr; gap: 26px;
+  padding: 16px 14px;
+  border-bottom: 1px solid var(--line);
+  align-items: baseline;
+}
+
+.sched-time {
+  font-weight: 600; font-size: .95rem; color: var(--ink);
+  font-variant-numeric: tabular-nums; letter-spacing: -.01em;
+}
+.sched-what { font-size: 1rem; color: var(--ink-2); }
+
+.sched-row.is-break {
+  background: rgba(28,36,46,.04);
+  border-radius: var(--r-sm);
+  border-bottom-color: transparent;
+  margin: 3px 0;
+}
+.sched-row.is-break .sched-what { color: var(--ink-3); }
+
 /* ═══════════════════════ CFP ═══════════════════════ */
 .cfp-card {
-  background: var(--paper);
+  background: var(--paper-2);
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   padding: clamp(30px, 4.5vw, 48px);
@@ -371,7 +404,7 @@ p { text-wrap: pretty; }
 
 .cfp-tracks { display: grid; grid-template-columns: 1fr; gap: 16px; margin: 30px 0; }
 
-.cfp-track { background: var(--paper-2); border: 1px solid var(--line); border-radius: var(--r-md); padding: 22px; }
+.cfp-track { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: 22px; }
 .cfp-track h4 { font-size: .97rem; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
 .cfp-track p { font-size: .88rem; color: var(--ink-3); margin: 0; }
 
@@ -473,6 +506,7 @@ footer { background: var(--deep); color: rgba(243,240,234,.58); padding: 60px 28
   .people-grid--speakers, .people-grid--organizers { grid-template-columns: repeat(2, 1fr); }
   .person-name { font-size: .95rem; }
   .person-affil, .person-topic { font-size: .8rem; }
+  .sched-row { grid-template-columns: 1fr; gap: 3px; padding: 14px 10px; }
   .hero-meta { flex-direction: column; gap: 9px; }
   .footer-inner { flex-direction: column; }
 }
@@ -517,10 +551,7 @@ footer { background: var(--deep); color: rgba(243,240,234,.58); padding: 60px 28
     <a href="#about"      class="nav-link">About</a>
     <a href="#dates"      class="nav-link">Key Dates</a>
     <a href="#speakers"   class="nav-link">Speakers</a>
-    <!-- SCHEDULE nav link is hidden while the schedule section below is
-         commented out. Restore this line when the schedule comes back:
     <a href="#schedule"   class="nav-link">Schedule</a>
-    -->
     <a href="#cfp"        class="nav-link">Call for Papers</a>
     <a href="#organizers" class="nav-link">Organizers</a>
   </div>
@@ -673,43 +704,38 @@ footer { background: var(--deep); color: rgba(243,240,234,.58); padding: 60px 28
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════════════════════════
-     SCHEDULE — temporarily hidden.
-     To bring it back: remove this opening comment marker and the
-     closing marker further below, then restore the Schedule nav
-     link in the navigation block above.
-     ══════════════════════════════════════════════════════════════
+<!-- ══════════════════ SCHEDULE ══════════════════ -->
 <section class="band band--tint" id="schedule" data-section="schedule">
   <div class="section">
     <div class="prose reveal">
       <p class="eyebrow">Program</p>
       <h2 class="section-title">Schedule</h2>
-      <p class="section-note">A full day inside the NeurIPS 08:00 to 17:00 window, with six invited talks, two poster sessions, four oral presentations of accepted papers, and a panel discussion.</p>
+      <p class="section-note">A full day inside the NeurIPS 08:00–17:00 window, with six invited talks, two poster sessions, four oral presentations of accepted papers, and a panel discussion.</p>
     </div>
     <div class="sched reveal">
       <div class="sched-head"><span>Morning Session</span></div>
-      <div class="sched-row"><span class="sched-time">08:15 to 08:25</span><span class="sched-what">Opening Remarks</span></div>
-      <div class="sched-row"><span class="sched-time">08:25 to 09:00</span><span class="sched-what">Invited Talk 1</span></div>
-      <div class="sched-row"><span class="sched-time">09:00 to 09:35</span><span class="sched-what">Invited Talk 2</span></div>
-      <div class="sched-row is-break"><span class="sched-time">09:35 to 10:35</span><span class="sched-what">Poster Session I and Coffee Break</span></div>
-      <div class="sched-row"><span class="sched-time">10:35 to 11:10</span><span class="sched-what">Invited Talk 3</span></div>
-      <div class="sched-row"><span class="sched-time">11:10 to 11:30</span><span class="sched-what">Oral Talks</span></div>
+      <div class="sched-row"><span class="sched-time">08:15–08:25</span><span class="sched-what">Opening Remarks</span></div>
+      <div class="sched-row"><span class="sched-time">08:25–09:00</span><span class="sched-what">Invited Talk 1</span></div>
+      <div class="sched-row"><span class="sched-time">09:00–09:35</span><span class="sched-what">Invited Talk 2</span></div>
+      <div class="sched-row is-break"><span class="sched-time">09:35–10:35</span><span class="sched-what">Poster Session I + Coffee Break</span></div>
+      <div class="sched-row"><span class="sched-time">10:35–11:10</span><span class="sched-what">Invited Talk 3</span></div>
+      <div class="sched-row"><span class="sched-time">11:10–11:30</span><span class="sched-what">Oral Talks</span></div>
       <div class="sched-head"><span>Afternoon Session</span></div>
-      <div class="sched-row is-break"><span class="sched-time">11:30 to 13:00</span><span class="sched-what">Lunch Break</span></div>
-      <div class="sched-row"><span class="sched-time">13:00 to 13:35</span><span class="sched-what">Invited Talk 4</span></div>
-      <div class="sched-row"><span class="sched-time">13:35 to 14:10</span><span class="sched-what">Invited Talk 5</span></div>
-      <div class="sched-row is-break"><span class="sched-time">14:10 to 15:10</span><span class="sched-what">Poster Session II and Coffee Break</span></div>
-      <div class="sched-row"><span class="sched-time">15:10 to 15:45</span><span class="sched-what">Invited Talk 6</span></div>
-      <div class="sched-row"><span class="sched-time">15:45 to 16:05</span><span class="sched-what">Oral Talks</span></div>
-      <div class="sched-row"><span class="sched-time">16:05 to 16:50</span><span class="sched-what">Panel Discussion</span></div>
-      <div class="sched-row"><span class="sched-time">16:50 to 17:00</span><span class="sched-what">Closing Remarks and Awards</span></div>
+      <div class="sched-row is-break"><span class="sched-time">11:30–13:00</span><span class="sched-what">Lunch Break</span></div>
+      <div class="sched-row"><span class="sched-time">13:00–13:35</span><span class="sched-what">Invited Talk 4</span></div>
+      <div class="sched-row"><span class="sched-time">13:35–14:10</span><span class="sched-what">Invited Talk 5</span></div>
+      <div class="sched-row is-break"><span class="sched-time">14:10–15:10</span><span class="sched-what">Poster Session II + Coffee Break</span></div>
+      <div class="sched-row"><span class="sched-time">15:10–15:45</span><span class="sched-what">Invited Talk 6</span></div>
+      <div class="sched-row"><span class="sched-time">15:45–16:05</span><span class="sched-what">Oral Talks</span></div>
+      <div class="sched-row"><span class="sched-time">16:05–16:50</span><span class="sched-what">Panel Discussion</span></div>
+      <div class="sched-row"><span class="sched-time">16:50–17:00</span><span class="sched-what">Closing Remarks + Awards</span></div>
     </div>
   </div>
 </section>
-     ══════════════ END OF HIDDEN SCHEDULE ══════════════ -->
+
 
 <!-- ══════════════════ CFP ══════════════════ -->
-<section class="band band--tint" id="cfp" data-section="cfp">
+<section class="band" id="cfp" data-section="cfp">
   <div class="section">
     <div class="prose reveal">
       <p class="eyebrow">Submissions</p>
@@ -735,7 +761,7 @@ footer { background: var(--deep); color: rgba(243,240,234,.58); padding: 60px 28
 </section>
 
 <!-- ══════════════════ ORGANIZERS ══════════════════ -->
-<section class="band" id="organizers" data-section="organizers">
+<section class="band band--tint" id="organizers" data-section="organizers">
   <div class="section">
     <div class="prose reveal">
       <p class="eyebrow">Committee</p>
@@ -825,6 +851,7 @@ footer { background: var(--deep); color: rgba(243,240,234,.58); padding: 60px 28
       <a href="#about">About</a>
       <a href="#dates">Key Dates</a>
       <a href="#speakers">Speakers</a>
+      <a href="#schedule">Schedule</a>
       <a href="#cfp">Call for Papers</a>
       <a href="#organizers">Organizers</a>
     </nav>
@@ -849,7 +876,7 @@ const SECTIONS = {
   about:      true,
   dates:      true,
   speakers:   true,
-  schedule:   true,   // the section itself is commented out in the HTML for now
+  schedule:   true,
   cfp:        true,
   organizers: true,
   footer:     true,

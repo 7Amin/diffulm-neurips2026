@@ -350,6 +350,20 @@ p { text-wrap: pretty; }
 }
 .person-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 
+/* Subgrid ties every card in a row to the same four tracks — portrait,
+   name, affiliation, detail — so the rules line up even when an
+   affiliation wraps to two lines. */
+@supports (grid-template-rows: subgrid) {
+  .person {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 4;
+    row-gap: 0;
+    height: auto;
+  }
+  .person-topic, .person-link { margin-top: 0; align-self: start; }
+}
+
 /* ═══════════════════════ SCHEDULE ═══════════════════════ */
 .sched { margin-top: 4px; }
 

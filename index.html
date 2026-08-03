@@ -1,960 +1,225 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DiffuLM — Diffusion Language Models Workshop @ NeurIPS 2026</title>
-<meta name="description" content="NeurIPS 2026 Workshop on Diffusion Language Models: Foundations, Efficiency, and Reasoning. December 12, 2026, Sydney, Australia.">
-<meta name="theme-color" content="#16283a">
-
-<!-- Social sharing — swap in the absolute URL once the site is live -->
-<meta property="og:type" content="website">
-<meta property="og:title" content="DiffuLM — Diffusion Language Models Workshop @ NeurIPS 2026">
-<meta property="og:description" content="Foundations, Efficiency, and Reasoning. A full-day NeurIPS 2026 workshop. December 12, 2026, Sydney.">
-<meta property="og:image" content="assets/og-image.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="DiffuLM — Diffusion Language Models Workshop @ NeurIPS 2026">
-<meta name="twitter:description" content="Foundations, Efficiency, and Reasoning. A full-day NeurIPS 2026 workshop. December 12, 2026, Sydney.">
-<meta name="twitter:image" content="assets/og-image.png">
-
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%2316283a'/><text x='32' y='45' font-family='Georgia,serif' font-size='34' fill='%23f2efe9' text-anchor='middle'>D</text></svg>">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-/* ═══════════════════════ DESIGN TOKENS ═══════════════════════
-   A quiet paper-and-ink palette: warm neutral page, near-black
-   text, one deep slate used only to anchor the top and bottom,
-   a single muted blue for links, and brass for small accents.
-   ════════════════════════════════════════════════════════════ */
-:root {
-  --ink:        #1c242e;
-  --ink-2:      #414d59;
-  --ink-3:      #6a7683;
-
-  --paper:      #ffffff;
-  --paper-2:    #f7f6f3;
-  --paper-3:    #f0eee9;
-
-  --line:       #e7e4dd;
-  --line-2:     #d8d4ca;
-
-  --deep:       #16283a;
-  --cream:      #f3f0ea;
-
-  --accent:     #2e6193;
-  --accent-dk:  #234c74;
-
-  --brass:      #9d7942;
-  --brass-soft: #c9a877;
-
-  --maxw:       1240px;
-  --maxw-prose: 760px;
-  --nav-h:      70px;
-
-  --r-sm: 6px;
-  --r-md: 10px;
-  --r-lg: 14px;
-
-  --sh-1: 0 1px 2px rgba(28,36,46,.04);
-}
-
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-html { font-size: 19.5px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-
-body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: var(--ink);
-  background: var(--paper);
-  font-size: 1.07rem;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-img { max-width: 100%; display: block; }
-a { color: var(--accent); }
-
-/* keeps headings from breaking awkwardly mid-phrase */
-h1, h2, h3, h4 { text-wrap: balance; }
-p { text-wrap: pretty; }
-
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
-
-.skip-link {
-  position: absolute; left: -9999px; top: 0;
-  background: var(--deep); color: var(--cream);
-  padding: 12px 20px; z-index: 200;
-  text-decoration: none; font-weight: 600;
-}
-.skip-link:focus { left: 0; }
-
-/* ═══════════════════════ HERO ═══════════════════════ */
-.hero {
-  background: linear-gradient(178deg, #16283a 0%, #1b3149 100%);
-  color: var(--cream);
-  padding: clamp(76px, 11vw, 132px) 24px clamp(64px, 8vw, 104px);
-  text-align: center;
-}
-
-.hero-inner { max-width: 1240px; margin: 0 auto; }
-
-.hero-kicker {
-  font-size: 1rem; font-weight: 600;
-  letter-spacing: .18em; text-transform: uppercase;
-  color: var(--brass-soft);
-  margin-bottom: 30px;
-}
-
-.hero-abbr {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: clamp(2.7rem, 6.4vw, 4.3rem);
-  font-weight: 600; line-height: 1;
-  letter-spacing: -.02em;
-  color: var(--cream);
-  margin-bottom: 22px;
-}
-
-.hero-rule { width: 52px; height: 2px; background: var(--brass); margin: 0 auto 26px; }
-
-.hero h1 {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: clamp(1.6rem, 4.8vw, 3.4rem);
-  font-weight: 400; line-height: 1.16;
-  letter-spacing: -.012em;
-  color: rgba(243,240,234,.93);
-  max-width: 34ch;
-  margin: 0 auto 40px;
-}
-
-.hero-meta {
-  display: flex; justify-content: center; align-items: center;
-  flex-wrap: wrap; gap: 14px 34px;
-  font-size: 1.14rem; color: rgba(243,240,234,.72);
-}
-
-.hero-meta-item { display: inline-flex; align-items: center; gap: 10px; }
-.hero-meta-item svg { flex-shrink: 0; opacity: .55; width: 20px; height: 20px; }
-
-.hero-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; margin-top: 46px; }
-
-.btn {
-  display: inline-flex; align-items: center;
-  font-weight: 600; font-size: 1.02rem;
-  padding: 15px 34px; border-radius: var(--r-sm);
-  text-decoration: none;
-  transition: background .18s ease, border-color .18s ease;
-}
-
-.btn-solid { background: var(--cream); color: var(--deep); }
-.btn-solid:hover { background: #fff; }
-.btn-line { color: var(--cream); border: 1px solid rgba(243,240,234,.3); }
-.btn-line:hover { border-color: rgba(243,240,234,.68); background: rgba(243,240,234,.06); }
-
-/* ═══════════════════════ NAV ═══════════════════════ */
-.sticky-nav {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(255,255,255,.9);
-  backdrop-filter: saturate(180%) blur(12px);
-  border-bottom: 1px solid var(--line);
-}
-
-.nav-inner {
-  max-width: var(--maxw); margin: 0 auto; padding: 0 28px;
-  display: flex; align-items: center; gap: 2px;
-  height: var(--nav-h);
-  overflow-x: auto; scrollbar-width: none;
-}
-.nav-inner::-webkit-scrollbar { display: none; }
-
-.nav-brand {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-weight: 600; font-size: 1.05rem;
-  color: var(--ink); text-decoration: none;
-  margin-right: 24px; white-space: nowrap;
-  opacity: 0; transform: translateY(-3px);
-  transition: opacity .25s ease, transform .25s ease;
-  pointer-events: none;
-}
-.nav-inner.scrolled .nav-brand { opacity: 1; transform: none; pointer-events: auto; }
-
-.nav-link {
-  position: relative; padding: 8px 13px;
-  text-decoration: none; color: var(--ink-3);
-  font-size: .875rem; font-weight: 500;
-  white-space: nowrap; border-radius: var(--r-sm);
-  transition: color .16s ease;
-}
-.nav-link:hover { color: var(--ink); }
-.nav-link[aria-current="true"] { color: var(--ink); font-weight: 600; }
-.nav-link[aria-current="true"]::after {
-  content: ''; position: absolute;
-  left: 13px; right: 13px; bottom: -1px; height: 2px;
-  background: var(--brass); border-radius: 2px;
-}
-
-/* ═══════════════════════ SECTION SHELL ═══════════════════════ */
-.band { scroll-margin-top: var(--nav-h); }
-.band--tint { background: var(--paper-2); border-block: 1px solid var(--line); }
-
-.section { max-width: var(--maxw); margin: 0 auto; padding: clamp(60px, 8vw, 96px) 28px; }
-.prose { max-width: var(--maxw-prose); }
-
-/* heading left, body right — keeps a readable measure while
-   using the full width of the page instead of half of it */
-.split { display: grid; grid-template-columns: 1fr 1.55fr; gap: 30px 64px; align-items: start; }
-.split-head { position: sticky; top: calc(var(--nav-h) + 36px); }
-.split-body > :last-child { margin-bottom: 0; }
-
-@media (max-width: 900px) {
-  .split { grid-template-columns: 1fr; gap: 18px; }
-  .split-head { position: static; }
-}
-
-.eyebrow {
-  display: flex; align-items: center; gap: 12px;
-  font-size: .7rem; font-weight: 600;
-  letter-spacing: .18em; text-transform: uppercase;
-  color: var(--brass); margin-bottom: 14px;
-}
-.eyebrow::after { content: ''; flex: 0 0 34px; height: 1px; background: var(--brass-soft); }
-
-.section-title {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: clamp(2.1rem, 4.4vw, 3.4rem);
-  font-weight: 600; line-height: 1.18;
-  letter-spacing: -.015em; color: var(--ink);
-  margin-bottom: 16px;
-}
-
-.section-note { color: var(--ink-3); font-size: .95rem; max-width: 62ch; margin-bottom: 36px; }
-
-.subhead {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: 1.3rem; font-weight: 600;
-  color: var(--ink); margin: 60px 0 16px;
-}
-
-/* ═══════════════════════ ABOUT ═══════════════════════ */
-.lede { font-size: 1.13rem; line-height: 1.6; color: var(--ink); margin-bottom: 22px; }
-.body-text { color: var(--ink-2); margin-bottom: 18px; }
-
-.pillars {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(298px, 1fr));
-  gap: 1px; margin-top: 60px;
-  background: var(--line);
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  overflow: hidden;
-}
-
-.pillar { background: var(--paper); padding: 30px 28px; }
-
-.pillar-num {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: .93rem; font-weight: 600;
-  color: var(--brass); display: block; margin-bottom: 12px;
-}
-
-.pillar h3 { font-size: 1.03rem; font-weight: 600; color: var(--ink); margin-bottom: 10px; }
-.pillar p { font-size: .91rem; color: var(--ink-3); line-height: 1.62; }
-
-.topics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 12px; margin-top: 24px; }
-
-.topic-chip {
-  border: 1px solid var(--line); border-radius: var(--r-sm);
-  padding: 13px 17px; font-size: .89rem;
-  color: var(--ink-2); background: var(--paper);
-  transition: border-color .16s ease, color .16s ease;
-}
-.topic-chip:hover { border-color: var(--line-2); color: var(--ink); }
-
-/* ═══════════════════════ TIMELINE ═══════════════════════ */
-.timeline { list-style: none; margin-top: 4px; border-left: 1px solid var(--line-2); }
-
-.tl-item {
-  position: relative;
-  display: grid; grid-template-columns: 300px 1fr; gap: 26px;
-  align-items: baseline; padding: 19px 0 19px 32px;
-}
-
-.tl-item::before {
-  content: ''; position: absolute; left: -5px; top: 28px;
-  width: 9px; height: 9px; border-radius: 50%;
-  background: var(--paper-2); border: 1px solid var(--line-2);
-}
-.tl-item.is-key::before { background: var(--brass); border-color: var(--brass); }
-
-.tl-date { font-size: .91rem; font-weight: 500; color: var(--ink-3); font-variant-numeric: tabular-nums; }
-.tl-item.is-key .tl-date { color: var(--ink); font-weight: 600; }
-.tl-what { font-size: .97rem; color: var(--ink-2); }
-.tl-item.is-key .tl-what { color: var(--ink); }
-
-.pill {
-  display: inline-block; font-size: .67rem; font-weight: 600;
-  text-transform: uppercase; letter-spacing: .08em;
-  padding: 2px 9px; border-radius: 999px;
-  border: 1px solid var(--line-2); color: var(--ink-3);
-  margin-left: 10px; vertical-align: 2px;
-}
-
-.pill--live { border-color: var(--brass-soft); color: var(--brass); background: rgba(157,121,66,.07); }
-
-/* ═══════════════════════ PEOPLE ═══════════════════════ */
-.people-grid { display: grid; gap: 34px 26px; }
-.people-grid > * { min-width: 0; }
-.people-grid--speakers   { grid-template-columns: repeat(3, 1fr); }
-.people-grid--organizers { grid-template-columns: repeat(4, 1fr); }
-
-.person { display: flex; flex-direction: column; height: 100%; min-width: 0; }
-
-.portrait {
-  position: relative; width: 100%; aspect-ratio: 1 / 1;
-  border-radius: var(--r-md); overflow: hidden; min-width: 0;
-  background: var(--paper-3); margin-bottom: 16px;
-}
-
-.portrait img { width: 100%; height: 100%; object-fit: cover; }
-
-.portrait::after {
-  content: ''; position: absolute; inset: 0;
-  border-radius: inherit;
-  box-shadow: inset 0 0 0 1px rgba(28,36,46,.08);
-  pointer-events: none;
-}
-
-.portrait--mono {
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: clamp(2rem, 4.5vw, 2.8rem);
-  font-weight: 600; color: var(--ink-3);
-}
-
-.person-name { font-size: 1.03rem; font-weight: 600; color: var(--ink); line-height: 1.35; }
-.person-name a { color: inherit; text-decoration: none; }
-.person-name a:hover { color: var(--accent); }
-
-.person-affil { font-size: .87rem; color: var(--ink-3); margin-top: 5px; line-height: 1.5; }
-
-.person-topic {
-  font-size: .85rem; color: var(--ink-2);
-  margin-top: auto; padding-top: 12px;
-  border-top: 1px solid var(--line); line-height: 1.5;
-}
-
-.person-link {
-  font-size: .82rem; font-weight: 500;
-  color: var(--accent); text-decoration: none;
-  margin-top: auto; padding-top: 10px;
-  align-self: flex-start;
-}
-.person-link:hover { text-decoration: underline; text-underline-offset: 3px; }
-
-/* Subgrid ties every card in a row to the same four tracks — portrait,
-   name, affiliation, detail — so the rules line up even when an
-   affiliation wraps to two lines. */
-@supports (grid-template-rows: subgrid) {
-  .person {
-    display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 4;
-    row-gap: 0;
-    height: auto;
-  }
-  .person-topic, .person-link { margin-top: 0; align-self: start; }
-}
-
-/* ═══════════════════════ SCHEDULE ═══════════════════════ */
-.sched { margin-top: 4px; }
-
-.sched-head { display: flex; align-items: center; gap: 14px; margin: 46px 0 6px; }
-.sched-head:first-child { margin-top: 0; }
-.sched-head span {
-  font-size: .72rem; font-weight: 600;
-  letter-spacing: .16em; text-transform: uppercase;
-  color: var(--brass); white-space: nowrap;
-}
-.sched-head::after { content: ''; flex: 1; height: 1px; background: var(--line-2); }
-
-.sched-row {
-  display: grid; grid-template-columns: 172px 1fr; gap: 26px;
-  padding: 16px 14px;
-  border-bottom: 1px solid var(--line);
-  align-items: baseline;
-}
-
-.sched-time {
-  font-weight: 600; font-size: .95rem; color: var(--ink);
-  font-variant-numeric: tabular-nums; letter-spacing: -.01em;
-}
-.sched-what { font-size: 1rem; color: var(--ink-2); }
-
-.sched-row.is-break {
-  background: rgba(28,36,46,.04);
-  border-radius: var(--r-sm);
-  border-bottom-color: transparent;
-  margin: 3px 0;
-}
-.sched-row.is-break .sched-what { color: var(--ink-3); }
-
-/* ═══════════════════════ CFP ═══════════════════════ */
-.cfp-card {
-  background: var(--paper-2);
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  padding: clamp(30px, 4.5vw, 48px);
-  box-shadow: var(--sh-1);
-}
-
-.cfp-card h3 {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: clamp(1.4rem, 2.8vw, 1.8rem);
-  font-weight: 600; line-height: 1.35;
-  color: var(--ink); margin-bottom: 18px; max-width: 48ch;
-}
-
-.cfp-card p { color: var(--ink-2); font-size: .95rem; margin-bottom: 14px; }
-.cfp-card strong { color: var(--ink); font-weight: 600; }
-.cfp-card p a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
-.cfp-card p a:hover { color: var(--accent-dk); }
-
-.cfp-tracks { display: grid; grid-template-columns: 1fr; gap: 16px; margin: 30px 0; }
-
-.cfp-track { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: 22px; }
-.cfp-track h4 { font-size: .97rem; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
-.cfp-track p { font-size: .88rem; color: var(--ink-3); margin: 0; }
-
-.btn-submit {
-  display: inline-flex; align-items: center;
-  background: var(--accent); color: #fff;
-  font-weight: 600; font-size: .93rem;
-  padding: 13px 30px; border-radius: var(--r-sm);
-  text-decoration: none; margin-top: 12px;
-  transition: background .18s ease;
-}
-.btn-submit:hover { background: var(--accent-dk); }
-
-.btn-submit.is-disabled {
-  background: var(--paper-2); color: var(--ink-3);
-  border: 1px solid var(--line-2);
-  cursor: default; pointer-events: none; font-weight: 500;
-}
-
-/* ═══════════════════════ REVIEWERS ═══════════════════════ */
-.reviewer-cta {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 26px;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  padding: 28px 30px; margin-top: 18px;
-}
-
-.reviewer-cta p { color: var(--ink-2); font-size: .94rem; max-width: 58ch; }
-.reviewer-cta strong { color: var(--ink); font-weight: 600; }
-
-.btn-reviewer {
-  display: inline-flex; align-items: center;
-  background: var(--ink); color: var(--paper);
-  font-weight: 600; font-size: .89rem;
-  padding: 12px 26px; border-radius: var(--r-sm);
-  text-decoration: none; white-space: nowrap;
-  transition: background .18s ease;
-}
-.btn-reviewer:hover { background: var(--deep); }
-
-/* ═══════════════════════ FOOTER ═══════════════════════ */
-footer { background: var(--deep); color: rgba(243,240,234,.58); padding: 60px 28px 40px; font-size: .88rem; }
-
-.footer-inner {
-  max-width: var(--maxw); margin: 0 auto;
-  display: flex; justify-content: space-between;
-  align-items: flex-start; flex-wrap: wrap; gap: 30px;
-}
-
-.footer-brand {
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: 1.5rem; font-weight: 600;
-  color: var(--cream); line-height: 1; margin-bottom: 10px;
-}
-
-.footer-sub { color: rgba(243,240,234,.72); }
-.footer-meta { color: rgba(243,240,234,.44); margin-top: 5px; font-size: .84rem; }
-
-.footer-links { display: flex; flex-wrap: wrap; gap: 8px 22px; }
-.footer-links a { color: rgba(243,240,234,.72); text-decoration: none; }
-.footer-links a:hover { color: var(--cream); }
-
-.footer-rule {
-  max-width: var(--maxw); margin: 40px auto 0;
-  padding-top: 22px;
-  border-top: 1px solid rgba(243,240,234,.13);
-  color: rgba(243,240,234,.44); font-size: .82rem;
-}
-.footer-rule a { color: var(--brass-soft); text-decoration: none; }
-.footer-rule a:hover { text-decoration: underline; text-underline-offset: 3px; }
-
-/* ═══════════════════════ MOTION ═══════════════════════ */
-.reveal { opacity: 0; transform: translateY(10px); transition: opacity .55s ease, transform .55s ease; }
-.reveal.in { opacity: 1; transform: none; }
-
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-  .reveal { opacity: 1; transform: none; }
-}
-
-/* ═══════════════════════ RESPONSIVE ═══════════════════════ */
-@media (max-width: 1000px) {
-  .people-grid--organizers { grid-template-columns: repeat(3, 1fr); }
-}
-
-@media (max-width: 820px) {
-  .people-grid--speakers { grid-template-columns: repeat(2, 1fr); }
-  .tl-item { grid-template-columns: 1fr; gap: 3px; }
-  .cfp-tracks { grid-template-columns: 1fr; }
-  .reviewer-cta { flex-direction: column; align-items: flex-start; }
-}
-
-@media (max-width: 560px) {
-  .section { padding: 52px 20px; }
-  .people-grid { gap: 28px 16px; }
-  .people-grid--speakers, .people-grid--organizers { grid-template-columns: repeat(2, 1fr); }
-  .person-name { font-size: .95rem; }
-  .person-affil, .person-topic { font-size: .8rem; }
-  .sched-row { grid-template-columns: 1fr; gap: 3px; padding: 14px 10px; }
-  .hero-meta { flex-direction: column; gap: 9px; }
-  .footer-inner { flex-direction: column; }
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DiffuLM @ NeurIPS 2026</title>
+  <meta name="description" content="DiffuLM @ NeurIPS 2026 — the first NeurIPS workshop dedicated to diffusion language models. December 12, 2026 in Sydney, Australia.">
+  <meta name="theme-color" content="#142b3f">
+  <meta property="og:title" content="DiffuLM @ NeurIPS 2026">
+  <meta property="og:description" content="The first NeurIPS workshop dedicated to diffusion language models.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://7amin.github.io/diffulm-neurips2026/">
+  <meta property="og:image" content="https://7amin.github.io/diffulm-neurips2026/assets/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DiffuLM @ NeurIPS 2026">
+  <meta name="twitter:description" content="The first NeurIPS workshop dedicated to diffusion language models.">
+  <meta name="twitter:image" content="https://7amin.github.io/diffulm-neurips2026/assets/og-image.png">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%23142b3f'/><text x='32' y='45' font-family='Georgia,serif' font-size='34' fill='%23d9b36f' text-anchor='middle'>D</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,500;0,8..60,600;1,8..60,500;1,8..60,600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/site.js" defer></script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
 
-<a class="skip-link" href="#about">Skip to content</a>
-
-<!-- ══════════════════ HERO ══════════════════ -->
-<header class="hero" data-section="hero">
-  <div class="hero-inner">
-    <p class="hero-kicker">NeurIPS 2026 Workshop</p>
-    <div class="hero-abbr">DiffuLM</div>
-    <div class="hero-rule"></div>
-    <h1>Diffusion Language Models:<br>Foundations, Efficiency, and Reasoning</h1>
-    <div class="hero-meta">
-      <span class="hero-meta-item">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="3.5" width="11" height="10" rx="1.5"/><path d="M2.5 6.5h11M5.5 2v3M10.5 2v3"/></svg>
-        December 12, 2026
-      </span>
-      <span class="hero-meta-item">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 14.5s5-4.8 5-8.2A5 5 0 0 0 3 6.3c0 3.4 5 8.2 5 8.2z"/><circle cx="8" cy="6.2" r="1.8"/></svg>
-        Sydney, Australia
-      </span>
-      <span class="hero-meta-item">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 4.6V8l2.5 1.5"/></svg>
-        Full-day program
-      </span>
-    </div>
-    <div class="hero-actions">
-      <a href="#cfp" class="btn btn-solid">Call for Papers</a>
-      <a href="#speakers" class="btn btn-line">Invited Speakers</a>
-    </div>
-  </div>
-</header>
-
-<!-- ══════════════════ NAV ══════════════════ -->
-<nav class="sticky-nav" data-section="nav" aria-label="Section navigation">
-  <div class="nav-inner">
-    <a href="#" class="nav-brand">DiffuLM</a>
-    <a href="#about"      class="nav-link">About</a>
-    <a href="#dates"      class="nav-link">Key Dates</a>
-    <a href="#speakers"   class="nav-link">Speakers</a>
-    <a href="#schedule"   class="nav-link">Schedule</a>
-    <a href="#cfp"        class="nav-link">Call for Papers</a>
-    <a href="#organizers" class="nav-link">Organizers</a>
-  </div>
-</nav>
-
-<!-- ══════════════════ ABOUT ══════════════════ -->
-<section class="band" id="about" data-section="about">
-  <div class="section">
-    <div class="split reveal">
-      <div class="split-head">
-        <p class="eyebrow">About</p>
-        <h2 class="section-title">A dedicated venue for diffusion language models</h2>
-      </div>
-      <div class="split-body">
-        <p class="lede">Language models have been autoregressive by default. Diffusion language models take a different route: they corrupt sequences with noise and learn to reverse it, producing text through iterative refinement rather than one token at a time.</p>
-        <p class="body-text">That shift changes what a language model can do: tokens are decoded in parallel, context flows in both directions, and generation becomes far easier to steer and constrain. Over 2025 and 2026 the idea also stopped being theoretical. Inception Labs shipped Mercury, the first commercial-scale diffusion language model; LLaDA and Dream arrived from academic labs; and SEDD, MDLM, FS-DFM, and LaViDa showed that diffusion can match or exceed autoregressive baselines while decoding substantially faster.</p>
-        <p class="body-text">Progress has been quick, but the foundations remain fragmented across competing formulations, and the practical questions of efficiency and reasoning are still open. This full-day workshop brings researchers from academia and industry together to consolidate the theory, confront the systems challenges, and examine what diffusion genuinely offers for reasoning.</p>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="nav-inner">
+      <a class="nav-brand" href="index.html" aria-label="DiffuLM home">DiffuLM <span>@ NeurIPS 2026</span></a>
+      <div class="nav-links">
+        <a class="nav-link" href="#speakers">Speakers</a>
+        <a class="nav-link" href="#organizers">Organizers</a>
+        <a class="nav-link" href="cfp.html">Call for Papers</a>
+        <a class="nav-link" href="https://openreview.net/group?id=NeurIPS.cc/2026/Workshop/DiffuLM" target="_blank" rel="noopener">Submit</a>
+        <a class="nav-link nav-link--gold" href="https://docs.google.com/forms/d/e/1FAIpQLScshblF4A4a73HL4M5H2XjHpYoo7YpVj2d7eaMZzkwT3WhE0w/viewform" target="_blank" rel="noopener">Review</a>
       </div>
     </div>
+  </nav>
 
-    <div class="pillars reveal">
-      <article class="pillar">
-        <span class="pillar-num">01</span>
-        <h3>Theory and Foundations</h3>
-        <p>Masked, uniform, and continuous formulations remain only loosely connected. What is the right unifying formalism, which scaling laws govern training, and which architectural choices actually matter?</p>
-      </article>
-      <article class="pillar">
-        <span class="pillar-num">02</span>
-        <h3>Efficiency</h3>
-        <p>Parallel decoding is the central promise, yet practical models still need many denoising steps. How far does that parallelism really extend, and what serving infrastructure does it demand?</p>
-      </article>
-      <article class="pillar">
-        <span class="pillar-num">03</span>
-        <h3>Reasoning</h3>
-        <p>Refining a whole solution trace may avoid the cascading errors of left-to-right decoding. Where does that help, where does the lack of sequential structure hurt, and can the diversity gains be measured?</p>
-      </article>
-    </div>
+  <main id="main">
+    <header class="hero">
+      <div class="hero-inner">
+        <div>
+          <h1><span class="brand-word">DiffuLM</span> <span class="event-word">@ NeurIPS 2026</span></h1>
+          <p class="formal-title">Diffusion Language Models:<br>Foundations, Efficiency, and Reasoning</p>
+          <p class="first-line">The first NeurIPS workshop dedicated to diffusion language models</p>
+          <div class="hero-actions">
+            <a class="button button--gold" href="cfp.html">Read the Call for Papers <span aria-hidden="true">→</span></a>
+            <a class="button button--outline" href="#speakers">Meet the Invited Speakers</a>
+          </div>
+        </div>
 
-    <div class="reveal">
-      <h3 class="subhead">Topics of Interest</h3>
-      <p class="section-note">We welcome contributions across the following areas, and related work beyond them.</p>
-      <div class="topics-grid">
-        <div class="topic-chip">Categorical and masked diffusion formulations</div>
-        <div class="topic-chip">Training objectives and probabilistic inference</div>
-        <div class="topic-chip">Scaling laws and training efficiency</div>
-        <div class="topic-chip">Sampling, parallel decoding and fast inference</div>
-        <div class="topic-chip">Hybrid autoregressive and diffusion modeling</div>
-        <div class="topic-chip">Flow matching and continuous diffusion</div>
-        <div class="topic-chip">Reasoning, planning and code generation</div>
-        <div class="topic-chip">Controllable generation and post-training</div>
-        <div class="topic-chip">Reinforcement learning and alignment</div>
-        <div class="topic-chip">Multimodal diffusion language models</div>
-        <div class="topic-chip">Structured and biological sequence generation</div>
-        <div class="topic-chip">Serving systems and hardware-aware design</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════ KEY DATES ══════════════════ -->
-<section class="band band--tint" id="dates" data-section="dates">
-  <div class="section">
-    <div class="prose reveal">
-      <p class="eyebrow">Timeline</p>
-      <h2 class="section-title">Key Dates</h2>
-      <p class="section-note">All deadlines are Anywhere on Earth.</p>
-    </div>
-    <ul class="timeline reveal">
-      <li class="tl-item">
-        <span class="tl-date">End of July 2026</span>
-        <span class="tl-what">Call for papers released</span>
-      </li>
-      <li class="tl-item is-key">
-        <span class="tl-date">August 1, 2026</span>
-        <span class="tl-what">Submission site opens <span class="pill pill--live">Now open</span></span>
-      </li>
-      <li class="tl-item is-key">
-        <span class="tl-date">August 29, 2026 (AoE)</span>
-        <span class="tl-what">Submission deadline</span>
-      </li>
-      <li class="tl-item">
-        <span class="tl-date">September 29, 2026 (AoE)</span>
-        <span class="tl-what">Acceptance notification</span>
-      </li>
-      <li class="tl-item">
-        <span class="tl-date">October 2026</span>
-        <span class="tl-what">Camera-ready deadline</span>
-      </li>
-      <li class="tl-item is-key">
-        <span class="tl-date">December 12, 2026</span>
-        <span class="tl-what">Workshop at NeurIPS 2026, Sydney</span>
-      </li>
-    </ul>
-  </div>
-</section>
-
-<!-- ══════════════════ SPEAKERS ══════════════════ -->
-<section class="band" id="speakers" data-section="speakers">
-  <div class="section">
-    <div class="prose reveal">
-      <p class="eyebrow">Program</p>
-      <h2 class="section-title">Invited Speakers</h2>
-      <p class="section-note">Each invited talk is a 30-minute presentation followed by a 5-minute discussion.</p>
-    </div>
-    <div class="people-grid people-grid--speakers reveal">
-
-      <article class="person">
-        <div class="portrait"><img src="assets/people/stefano-ermon.jpg" alt="Stefano Ermon" width="800" height="800" loading="lazy"></div>
-        <h3 class="person-name"><a href="https://cs.stanford.edu/~ermon/" target="_blank" rel="noopener">Stefano Ermon</a></h3>
-        <p class="person-affil">Associate Professor, Stanford University</p>
-        <p class="person-topic">Score-based diffusion and probabilistic inference</p>
-      </article>
-
-      <article class="person">
-        <div class="portrait"><img src="assets/people/subham-sahoo.jpg" alt="Subham Sahoo" width="800" height="800" loading="lazy"></div>
-        <h3 class="person-name"><a href="https://s-sahoo.com/" target="_blank" rel="noopener">Subham Sahoo</a></h3>
-        <p class="person-affil">MBZUAI Institute of Foundation Models</p>
-        <p class="person-topic">Foundations and scaling of diffusion language models</p>
-      </article>
-
-      <article class="person">
-        <div class="portrait"><img src="assets/people/arash-vahdat.jpg" alt="Arash Vahdat" width="800" height="800" loading="lazy"></div>
-        <h3 class="person-name"><a href="http://latentspace.cc" target="_blank" rel="noopener">Arash Vahdat</a></h3>
-        <p class="person-affil">Research Director, NVIDIA Research</p>
-        <p class="person-topic">Scalable generative modeling and generative AI for science</p>
-      </article>
-
-      <article class="person">
-        <div class="portrait"><img src="assets/people/volodymyr-kuleshov.jpg" alt="Volodymyr Kuleshov" width="800" height="800" loading="lazy"></div>
-        <h3 class="person-name"><a href="https://www.cs.cornell.edu/~kuleshov/" target="_blank" rel="noopener">Volodymyr Kuleshov</a></h3>
-        <p class="person-affil">Assistant Professor at Cornell, Co-Founder &amp; Chief Scientist at Inception Labs</p>
-        <p class="person-topic">Foundations of discrete diffusion: masked, uniform, block diffusion, inference-time scaling, guidance</p>
-      </article>
-
-      <article class="person">
-        <div class="portrait"><img src="assets/people/itai-gat.jpg" alt="Itai Gat" width="800" height="800" loading="lazy"></div>
-        <h3 class="person-name"><a href="https://itaigat.com" target="_blank" rel="noopener">Itai Gat</a></h3>
-        <p class="person-affil">Research Scientist, Meta Superintelligence Labs</p>
-        <p class="person-topic">Discrete flow matching and accelerated sampling</p>
-      </article>
-
-      <article class="person">
-        <div class="portrait"><img src="assets/people/aditya-grover.jpg" alt="Aditya Grover" width="800" height="800" loading="lazy"></div>
-        <h3 class="person-name"><a href="https://aditya-grover.github.io/" target="_blank" rel="noopener">Aditya Grover</a></h3>
-        <p class="person-affil">Assistant Professor at UCLA, Co-Founder and CTO at Inception</p>
-        <p class="person-topic">Post-Training Diffusion LLMs (RL, Distillation, Multimodality)</p>
-      </article>
-
-
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════ SCHEDULE ══════════════════ -->
-<section class="band band--tint" id="schedule" data-section="schedule">
-  <div class="section">
-    <div class="prose reveal">
-      <p class="eyebrow">Program</p>
-      <h2 class="section-title">Schedule</h2>
-      <p class="section-note">A full day inside the NeurIPS 08:00–17:00 window, with six invited talks, two poster sessions, four oral presentations of accepted papers, and a panel discussion.</p>
-    </div>
-    <div class="sched reveal">
-      <div class="sched-head"><span>Morning Session</span></div>
-      <div class="sched-row"><span class="sched-time">08:15–08:25</span><span class="sched-what">Opening Remarks</span></div>
-      <div class="sched-row"><span class="sched-time">08:25–09:00</span><span class="sched-what">Invited Talk 1</span></div>
-      <div class="sched-row"><span class="sched-time">09:00–09:35</span><span class="sched-what">Invited Talk 2</span></div>
-      <div class="sched-row is-break"><span class="sched-time">09:35–10:35</span><span class="sched-what">Poster Session I + Coffee Break</span></div>
-      <div class="sched-row"><span class="sched-time">10:35–11:10</span><span class="sched-what">Invited Talk 3</span></div>
-      <div class="sched-row"><span class="sched-time">11:10–11:30</span><span class="sched-what">Oral Talks</span></div>
-      <div class="sched-head"><span>Afternoon Session</span></div>
-      <div class="sched-row is-break"><span class="sched-time">11:30–13:00</span><span class="sched-what">Lunch Break</span></div>
-      <div class="sched-row"><span class="sched-time">13:00–13:35</span><span class="sched-what">Invited Talk 4</span></div>
-      <div class="sched-row"><span class="sched-time">13:35–14:10</span><span class="sched-what">Invited Talk 5</span></div>
-      <div class="sched-row is-break"><span class="sched-time">14:10–15:10</span><span class="sched-what">Poster Session II + Coffee Break</span></div>
-      <div class="sched-row"><span class="sched-time">15:10–15:45</span><span class="sched-what">Invited Talk 6</span></div>
-      <div class="sched-row"><span class="sched-time">15:45–16:05</span><span class="sched-what">Oral Talks</span></div>
-      <div class="sched-row"><span class="sched-time">16:05–16:50</span><span class="sched-what">Panel Discussion</span></div>
-      <div class="sched-row"><span class="sched-time">16:50–17:00</span><span class="sched-what">Closing Remarks + Awards</span></div>
-    </div>
-  </div>
-</section>
-
-
-<!-- ══════════════════ CFP ══════════════════ -->
-<section class="band" id="cfp" data-section="cfp">
-  <div class="section">
-    <div class="prose reveal">
-      <p class="eyebrow">Submissions</p>
-      <h2 class="section-title">Call for Papers</h2>
-    </div>
-
-    <div class="cfp-card reveal">
-      <h3>We invite work advancing diffusion language models and related non-autoregressive methods</h3>
-      <p>Submissions may span theory, algorithms, and systems: categorical and masked diffusion; training objectives and their connections to probabilistic inference; sampling, parallel decoding, and efficient inference; reasoning, code generation, and planning; controllable generation and post-training; reinforcement learning and alignment; and hybrid autoregressive and diffusion approaches.</p>
-      <p>All submissions are <strong>non-archival</strong> and reviewed <strong>double-blind on OpenReview</strong>. Work already published at NeurIPS 2026 or another archival venue is not eligible.</p>
-
-      <div class="cfp-tracks">
-        <div class="cfp-track">
-          <h4>Short Papers</h4>
-          <p>Up to 8 pages of main text, with unlimited references and an optional appendix. More complete contributions with experiments or theory.</p>
+        <div class="diffusion-figure" aria-hidden="true">
+          <div class="token-grid">
+            <i class="token"></i><i class="token"></i><i class="token"></i><i class="token"></i><i class="token"></i><i class="token"></i>
+            <i class="token"></i><i class="token"></i><i class="token"></i><i class="token"></i><i class="token"></i><i class="token"></i>
+            <i class="token"></i><i class="token"></i><i class="token"></i><i class="token"></i><i class="token"></i><i class="token"></i>
+            <i class="token"></i><i class="token"></i><i class="token"></i><i class="token"></i><i class="token"></i><i class="token"></i>
+          </div>
         </div>
       </div>
+    </header>
 
-      <p>Papers must be formatted with the <strong>NeurIPS 2026 style template</strong>, available from the <a href="https://neurips.cc/Conferences/2026/CallForPapers" target="_blank" rel="noopener">NeurIPS 2026 Call for Papers</a> page.</p>
-      <p>Every submission receives at least three reviews. We will award a <strong>Best Paper</strong> and a <strong>Best Student Paper</strong> prize. Organizers recuse themselves from submissions involving their own institution or active collaborators.</p>
-      <a href="#" class="btn-submit is-disabled" data-openreview>Submission link coming soon</a>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════ ORGANIZERS ══════════════════ -->
-<section class="band band--tint" id="organizers" data-section="organizers">
-  <div class="section">
-    <div class="prose reveal">
-      <p class="eyebrow">Committee</p>
-      <h2 class="section-title">Organizers</h2>
-      <p class="section-note">Listed alphabetically, with complementary expertise across the foundations, efficiency, reasoning, and applications of diffusion language models.</p>
-    </div>
-
-    <div class="people-grid people-grid--organizers reveal">
-
-      <article class="person">
-        <div class="portrait"><img src="assets/people/irina-belousova.jpg" alt="Irina Belousova" width="800" height="800" loading="lazy"></div>
-        <h3 class="person-name">Irina Belousova</h3>
-        <p class="person-affil">ML Engineering Manager, Apple</p>
-        <a class="person-link" href="https://www.linkedin.com/in/ibelous/" target="_blank" rel="noopener">LinkedIn ↗</a>
-      </article>
-
-      <article class="person">
-        <div class="portrait"><img src="assets/people/shansan-gong.jpg" alt="Shansan Gong" width="800" height="800" loading="lazy"></div>
-        <h3 class="person-name">Shansan Gong</h3>
-        <p class="person-affil">Ph.D. Candidate, HKU</p>
-        <a class="person-link" href="https://summmeer.github.io/" target="_blank" rel="noopener">Website ↗</a>
-      </article>
-
-      <article class="person">
-        <div class="portrait"><img src="assets/people/amin-karimi-monsefi.jpg" alt="Amin Karimi Monsefi" width="800" height="800" loading="lazy"></div>
-        <h3 class="person-name">Amin Karimi Monsefi</h3>
-        <p class="person-affil">Ph.D. Candidate, Ohio State University</p>
-        <a class="person-link" href="https://7amin.github.io/" target="_blank" rel="noopener">Website ↗</a>
-      </article>
-
-      <article class="person">
-        <div class="portrait"><img src="assets/people/pavlo-molchanov.jpg" alt="Pavlo Molchanov" width="800" height="800" loading="lazy"></div>
-        <h3 class="person-name">Pavlo Molchanov</h3>
-        <p class="person-affil">Research Director, NVIDIA Research</p>
-        <a class="person-link" href="https://pmolchanov.com/" target="_blank" rel="noopener">Website ↗</a>
-      </article>
-
-      <article class="person">
-        <div class="portrait"><img src="assets/people/jinjie-ni.jpg" alt="Jinjie Ni" width="800" height="800" loading="lazy"></div>
-        <h3 class="person-name">Jinjie Ni</h3>
-        <p class="person-affil">Senior Research Scientist, Google DeepMind</p>
-        <a class="person-link" href="https://jinjieni.github.io/" target="_blank" rel="noopener">Website ↗</a>
-      </article>
-
-      <article class="person">
-        <div class="portrait"><img src="assets/people/michael-qizhe-shieh.jpg" alt="Michael Qizhe Shieh" width="800" height="800" loading="lazy"></div>
-        <h3 class="person-name">Michael Qizhe Shieh</h3>
-        <p class="person-affil">Assistant Professor, NUS</p>
-        <a class="person-link" href="https://qizhex.github.io/" target="_blank" rel="noopener">Website ↗</a>
-      </article>
-
-      <article class="person">
-        <div class="portrait"><img src="assets/people/yizhe-zhang.jpg" alt="Yizhe Zhang" width="800" height="800" loading="lazy"></div>
-        <h3 class="person-name">Yizhe Zhang</h3>
-        <p class="person-affil">Research Scientist, Meta</p>
-        <a class="person-link" href="https://dreasysnail.github.io/" target="_blank" rel="noopener">Website ↗</a>
-      </article>
-
-      <article class="person">
-        <div class="portrait"><img src="assets/people/yuchen-zhu.jpg" alt="Yuchen Zhu" width="800" height="800" loading="lazy"></div>
-        <h3 class="person-name">Yuchen Zhu</h3>
-        <p class="person-affil">Ph.D. Candidate, Georgia Tech</p>
-        <a class="person-link" href="https://yuchen-zhu-zyc.github.io" target="_blank" rel="noopener">Website ↗</a>
-      </article>
-
-    </div>
-
-    <div class="reveal">
-      <h3 class="subhead">Program Committee</h3>
-      <div class="reviewer-cta">
-        <p>We are <strong>actively recruiting reviewers</strong>. If you work on diffusion language models or a neighbouring area of generative modeling, we would be glad to have you on the committee.</p>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLScshblF4A4a73HL4M5H2XjHpYoo7YpVj2d7eaMZzkwT3WhE0w/viewform" class="btn-reviewer" target="_blank" rel="noopener">Sign up as a reviewer</a>
+    <div class="fact-strip" aria-label="Workshop details">
+      <div class="fact"><span class="fact-label">Workshop</span><strong>December 12, 2026</strong></div>
+      <div class="fact"><span class="fact-label">Location</span><strong>Sydney, Australia · Full day</strong></div>
+      <div class="fact fact--deadline">
+        <span class="fact-label">Paper deadline</span>
+        <strong>August 29, 2026 · AoE</strong>
+        <span class="countdown" data-countdown data-deadline="2026-08-30T12:00:00Z">
+          <span class="countdown-label">Closes in</span>
+          <span class="countdown-value" data-countdown-value>Calculating…</span>
+        </span>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- ══════════════════ FOOTER ══════════════════ -->
-<footer data-section="footer">
-  <div class="footer-inner">
-    <div>
-      <div class="footer-brand">DiffuLM</div>
-      <div class="footer-sub">Diffusion Language Models: Foundations, Efficiency, and Reasoning</div>
-      <div class="footer-meta">NeurIPS 2026 Workshop · December 12, 2026 · Sydney, Australia</div>
+    <section class="section section--compact" aria-labelledby="focus-title">
+      <div class="section-heading reveal">
+        <div>
+          <p class="eyebrow">Workshop focus</p>
+          <h2 id="focus-title">From foundations to intelligence</h2>
+        </div>
+      </div>
+      <div class="pillars reveal">
+        <article class="pillar">
+          <span class="pillar-index">01 · Foundations</span>
+          <h3>Theory &amp; Scaling</h3>
+          <p>Unifying diffusion formulations, scaling laws, training objectives, probabilistic inference, and model architectures.</p>
+        </article>
+        <article class="pillar">
+          <span class="pillar-index">02 · Performance</span>
+          <h3>Efficiency</h3>
+          <p>Parallel decoding, fast sampling, long-context generation, serving, evaluation, and hardware-aware systems.</p>
+        </article>
+        <article class="pillar">
+          <span class="pillar-index">03 · Intelligence</span>
+          <h3>Reasoning</h3>
+          <p>Global self-correction, diverse solution paths, test-time scaling, planning, code generation, and RL post-training.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="band--cream" id="speakers" aria-labelledby="speakers-title">
+      <div class="section section--compact">
+        <div class="section-heading reveal">
+          <div>
+            <p class="eyebrow">Six invited talks</p>
+            <h2 id="speakers-title">Invited Speakers</h2>
+          </div>
+        </div>
+        <div class="speakers-grid reveal">
+          <article class="speaker">
+            <div class="speaker-photo"><img src="assets/people/stefano-ermon.jpg" alt="Stefano Ermon" width="800" height="800" loading="lazy"></div>
+            <h3><a href="https://cs.stanford.edu/~ermon/" target="_blank" rel="noopener">Stefano Ermon</a></h3>
+            <p class="speaker-affil">Stanford University</p>
+          </article>
+          <article class="speaker">
+            <div class="speaker-photo"><img src="assets/people/subham-sahoo.jpg" alt="Subham Sahoo" width="800" height="800" loading="lazy"></div>
+            <h3><a href="https://s-sahoo.com/" target="_blank" rel="noopener">Subham Sahoo</a></h3>
+            <p class="speaker-affil">MBZUAI</p>
+          </article>
+          <article class="speaker">
+            <div class="speaker-photo"><img src="assets/people/arash-vahdat.jpg" alt="Arash Vahdat" width="800" height="800" loading="lazy"></div>
+            <h3><a href="http://latentspace.cc" target="_blank" rel="noopener">Arash Vahdat</a></h3>
+            <p class="speaker-affil">NVIDIA Research</p>
+          </article>
+          <article class="speaker">
+            <div class="speaker-photo"><img src="assets/people/volodymyr-kuleshov.jpg" alt="Volodymyr Kuleshov" width="800" height="800" loading="lazy"></div>
+            <h3><a href="https://www.cs.cornell.edu/~kuleshov/" target="_blank" rel="noopener">Volodymyr Kuleshov</a></h3>
+            <p class="speaker-affil">Cornell · Inception Labs</p>
+          </article>
+          <article class="speaker">
+            <div class="speaker-photo"><img src="assets/people/itai-gat.jpg" alt="Itai Gat" width="800" height="800" loading="lazy"></div>
+            <h3><a href="https://itaigat.com" target="_blank" rel="noopener">Itai Gat</a></h3>
+            <p class="speaker-affil">Meta</p>
+          </article>
+          <article class="speaker">
+            <div class="speaker-photo"><img src="assets/people/aditya-grover.jpg" alt="Aditya Grover" width="800" height="800" loading="lazy"></div>
+            <h3><a href="https://aditya-grover.github.io/" target="_blank" rel="noopener">Aditya Grover</a></h3>
+            <p class="speaker-affil">UCLA · Inception</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="organizers" aria-labelledby="organizers-title">
+      <div class="section section--compact">
+        <div class="section-heading reveal">
+          <div>
+            <p class="eyebrow">Academia × Industry</p>
+            <h2 id="organizers-title">Organizers</h2>
+          </div>
+        </div>
+        <div class="organizer-grid reveal">
+          <article class="organizer">
+            <div class="organizer-photo"><img src="assets/people/jinjie-ni.jpg" alt="Jinjie Ni" width="800" height="800" loading="lazy"></div>
+            <div><h3><a href="https://jinjieni.github.io/" target="_blank" rel="noopener">Jinjie Ni</a></h3><p>Senior Research Scientist<br>Google DeepMind</p></div>
+          </article>
+          <article class="organizer">
+            <div class="organizer-photo"><img src="assets/people/shansan-gong.jpg" alt="Shansan Gong" width="800" height="800" loading="lazy"></div>
+            <div><h3><a href="https://summmeer.github.io/" target="_blank" rel="noopener">Shansan Gong</a></h3><p>Ph.D. Candidate<br>HKU</p></div>
+          </article>
+          <article class="organizer">
+            <div class="organizer-photo"><img src="assets/people/amin-karimi-monsefi.jpg" alt="Amin Karimi Monsefi" width="800" height="800" loading="lazy"></div>
+            <div><h3><a href="https://7amin.github.io/" target="_blank" rel="noopener">Amin Karimi Monsefi</a></h3><p>Ph.D. Candidate<br>Ohio State University</p></div>
+          </article>
+          <article class="organizer">
+            <div class="organizer-photo"><img src="assets/people/yuchen-zhu.jpg" alt="Yuchen Zhu" width="800" height="800" loading="lazy"></div>
+            <div><h3><a href="https://yuchen-zhu-zyc.github.io" target="_blank" rel="noopener">Yuchen Zhu</a></h3><p>Ph.D. Candidate<br>Georgia Tech</p></div>
+          </article>
+          <article class="organizer">
+            <div class="organizer-photo"><img src="assets/people/irina-belousova.jpg" alt="Irina Belousova" width="800" height="800" loading="lazy"></div>
+            <div><h3><a href="https://www.linkedin.com/in/ibelous/" target="_blank" rel="noopener">Irina Belousova</a></h3><p>ML Engineering Manager<br>Apple</p></div>
+          </article>
+          <article class="organizer">
+            <div class="organizer-photo"><img src="assets/people/michael-qizhe-shieh.jpg" alt="Michael Qizhe Shieh" width="800" height="800" loading="lazy"></div>
+            <div><h3><a href="https://qizhex.github.io/" target="_blank" rel="noopener">Michael Qizhe Shieh</a></h3><p>Assistant Professor<br>NUS</p></div>
+          </article>
+          <article class="organizer">
+            <div class="organizer-photo"><img src="assets/people/yizhe-zhang.jpg" alt="Yizhe Zhang" width="800" height="800" loading="lazy"></div>
+            <div><h3><a href="https://dreasysnail.github.io/" target="_blank" rel="noopener">Yizhe Zhang</a></h3><p>Research Scientist<br>Meta</p></div>
+          </article>
+          <article class="organizer">
+            <div class="organizer-photo"><img src="assets/people/pavlo-molchanov.jpg" alt="Pavlo Molchanov" width="800" height="800" loading="lazy"></div>
+            <div><h3><a href="https://pmolchanov.com/" target="_blank" rel="noopener">Pavlo Molchanov</a></h3><p>Research Director<br>NVIDIA Research</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band--navy" aria-labelledby="links-title">
+      <div class="section section--compact">
+        <div class="section-heading reveal">
+          <div><p class="eyebrow">Participate</p><h2 id="links-title">Join DiffuLM</h2></div>
+        </div>
+        <div class="link-dock reveal">
+          <a class="dock-link" href="https://7amin.github.io/diffulm-neurips2026/" target="_blank" rel="noopener">
+            <span class="dock-label">Workshop website</span>
+            <strong>Program &amp; updates</strong>
+            <span class="dock-url">7amin.github.io/diffulm-neurips2026</span>
+          </a>
+          <a class="dock-link" href="https://openreview.net/group?id=NeurIPS.cc/2026/Workshop/DiffuLM" target="_blank" rel="noopener">
+            <span class="dock-label">Paper submission</span>
+            <strong>Submit via OpenReview</strong>
+            <span class="dock-url">NeurIPS 2026 / Workshop / DiffuLM</span>
+          </a>
+          <a class="dock-link" href="https://docs.google.com/forms/d/e/1FAIpQLScshblF4A4a73HL4M5H2XjHpYoo7YpVj2d7eaMZzkwT3WhE0w/viewform" target="_blank" rel="noopener">
+            <span class="dock-label">Reviewer sign-up</span>
+            <strong>Join the committee</strong>
+            <span class="dock-url">Open reviewer registration form</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>DiffuLM @ NeurIPS 2026 · December 12, 2026 · Sydney, Australia</span>
+      <span>Questions? <a href="mailto:amin.karimi1992@gmail.com?subject=DiffuLM%20%E2%80%94%20NeurIPS%202026%20Workshop">Contact the organizers</a></span>
     </div>
-    <nav class="footer-links" aria-label="Footer">
-      <a href="#about">About</a>
-      <a href="#dates">Key Dates</a>
-      <a href="#speakers">Speakers</a>
-      <a href="#schedule">Schedule</a>
-      <a href="#cfp">Call for Papers</a>
-      <a href="#organizers">Organizers</a>
-    </nav>
-  </div>
-  <div class="footer-rule">
-    Questions? Contact us at <a href="mailto:amin.karimi1992@gmail.com?subject=DiffuLM%20%E2%80%94%20NeurIPS%202026%20Workshop">amin.karimi1992@gmail.com</a> — please include the workshop title in the subject line.
-  </div>
-</footer>
-
-<!-- ══════════════════════════════════════════════
-     SITE CONFIG
-     ═══════════════════════════════════════════════
-     SECTIONS        set any section to false to hide it;
-                     its nav link hides automatically.
-     SUBMISSION_URL  paste the OpenReview URL once live and
-                     the button enables itself.
-     ══════════════════════════════════════════════ -->
-<script>
-const SECTIONS = {
-  hero:       true,
-  nav:        true,
-  about:      true,
-  dates:      true,
-  speakers:   true,
-  schedule:   true,
-  cfp:        true,
-  organizers: true,
-  footer:     true,
-};
-
-const SUBMISSION_URL = "https://openreview.net/group?id=NeurIPS.cc/2026/Workshop/DiffuLM";
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  Object.entries(SECTIONS).forEach(([key, visible]) => {
-    if (visible) return;
-    const el = document.querySelector(`[data-section="${key}"]`);
-    if (el) el.style.display = 'none';
-    document.querySelectorAll(`a[href="#${key}"]`).forEach(a => a.style.display = 'none');
-  });
-
-  const btn = document.querySelector('[data-openreview]');
-  if (btn && SUBMISSION_URL) {
-    btn.href = SUBMISSION_URL;
-    btn.target = '_blank';
-    btn.rel = 'noopener';
-    btn.classList.remove('is-disabled');
-    btn.textContent = 'Submit on OpenReview';
-  }
-
-  const navInner = document.querySelector('.nav-inner');
-  const onScroll = () => navInner.classList.toggle('scrolled', window.scrollY > 240);
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
-
-  const links = [...document.querySelectorAll('.nav-link')];
-  const bands = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
-
-  if ('IntersectionObserver' in window && bands.length) {
-    const seen = new Map();
-    const spy = new IntersectionObserver(entries => {
-      entries.forEach(e => seen.set(e.target.id, e.intersectionRatio));
-      let best = null, bestRatio = 0;
-      seen.forEach((ratio, id) => { if (ratio > bestRatio) { bestRatio = ratio; best = id; } });
-      links.forEach(a => a.setAttribute('aria-current',
-        best && a.getAttribute('href') === '#' + best ? 'true' : 'false'));
-    }, { threshold: [0, .12, .3, .6], rootMargin: '-60px 0px -55% 0px' });
-    bands.forEach(b => spy.observe(b));
-  }
-
-  const reveals = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries, obs) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
-      });
-    }, { threshold: .06, rootMargin: '0px 0px -40px 0px' });
-    reveals.forEach(el => io.observe(el));
-  } else {
-    reveals.forEach(el => el.classList.add('in'));
-  }
-});
-</script>
-
+  </footer>
 </body>
 </html>

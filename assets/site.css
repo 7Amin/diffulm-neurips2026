@@ -238,6 +238,42 @@ button, a { -webkit-tap-highlight-color: transparent; }
   letter-spacing: .02em;
 }
 
+/* Deadline extension: old date struck through, new date emphasised. */
+.date-old {
+  opacity: .62;
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  text-decoration-skip-ink: none;
+  font-weight: inherit;
+}
+.date-new { font-weight: inherit; }
+.extended-tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 3px 9px;
+  color: var(--rust);
+  background: rgba(180, 71, 32, .12);
+  border: 1px solid rgba(180, 71, 32, .32);
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: .64rem;
+  font-weight: 850;
+  letter-spacing: .13em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+/* In the CFP hero the superseded date sits smaller above the live one. */
+.deadline-box .date-old { font-size: 1.25rem; }
+.deadline-box strong + strong.date-new { margin-top: 2px; }
+/* On the rust-filled cards the badge inverts. */
+.fact--deadline .extended-tag,
+.deadline-box .extended-tag {
+  color: var(--white);
+  background: rgba(255, 255, 255, .2);
+  border-color: rgba(255, 255, 255, .5);
+}
+
 .section {
   width: min(1260px, calc(100% - 48px));
   margin: 0 auto;
@@ -368,7 +404,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .date-grid { display: grid; grid-template-columns: repeat(4, 1fr); overflow: hidden; background: var(--white); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
 .date-card { padding: 20px 22px; border-right: 1px solid var(--line); }
 .date-card:last-child { border: 0; }
-.date-card span { display: block; color: var(--gold-dark); font-size: .7rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+.date-card > span:first-child { display: block; color: var(--gold-dark); font-size: .7rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+.date-card .extended-tag { margin: 6px 0 0; }
 .date-card strong { display: block; margin-top: 5px; font-size: 1.02rem; }
 
 .cfp-overview { display: grid; grid-template-columns: 1.18fr .82fr; gap: 24px; }

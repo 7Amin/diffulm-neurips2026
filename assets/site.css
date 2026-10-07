@@ -329,7 +329,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .pillar h3 { margin: 12px 0 8px; font: 600 1.75rem/1.1 var(--serif); }
 .pillar p { margin: 0; color: var(--muted); font-size: .92rem; }
 
-.speakers-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 22px; }
+.speakers-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 22px; }
 .speaker { min-width: 0; text-align: center; }
 .speaker-photo {
   width: min(132px, 84%);
@@ -478,6 +478,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .schedule-row { display: grid; grid-template-columns: 110px 1fr; gap: 14px; padding: 11px 20px; border-top: 1px solid #ebe7df; font-size: .86rem; }
 .schedule-row time { color: var(--gold-dark); font-weight: 750; font-variant-numeric: tabular-nums; }
 .schedule-row.break { background: #f4eee4; }
+.schedule-row small { display: block; margin-top: 2px; color: var(--muted); font-size: .76rem; }
 
 .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .action-card { padding: 27px; color: var(--white); background: var(--navy-2); border-radius: 14px; }
@@ -499,7 +500,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .hero h1 { font-size: clamp(3.25rem, 7vw, 5.15rem); }
   .formal-title { max-width: calc(100% - 310px); }
   .diffusion-figure { width: 270px; bottom: 116px; }
-  .speakers-grid { grid-template-columns: repeat(3, 1fr); row-gap: 34px; }
+  .speakers-grid { grid-template-columns: repeat(4, 1fr); row-gap: 34px; }
   .organizer-grid { grid-template-columns: repeat(2, 1fr); }
   .subhero-inner { grid-template-columns: 1fr .58fr; }
 }

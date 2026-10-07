@@ -274,6 +274,24 @@ button, a { -webkit-tap-highlight-color: transparent; }
   border-color: rgba(255, 255, 255, .5);
 }
 
+.attention-banner {
+  width: min(1260px, calc(100% - 48px));
+  margin: 18px auto 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 28px;
+  padding: 22px 28px;
+  color: var(--navy);
+  background: var(--gold);
+  border-radius: 15px;
+  box-shadow: var(--shadow);
+}
+.attention-label { margin: 0 0 5px; font-size: .72rem; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
+.attention-banner h2 { margin: 0 0 6px; font: 600 1.55rem/1.15 var(--serif); }
+.attention-banner p:last-child { max-width: 860px; margin: 0; font-size: .9rem; }
+.attention-banner .button { color: var(--white); background: var(--navy); white-space: nowrap; }
+
 .section {
   width: min(1260px, calc(100% - 48px));
   margin: 0 auto;
@@ -507,11 +525,13 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .date-card { border-bottom: 1px solid var(--line); }
   .cfp-overview, .track-grid, .schedule-grid, .action-grid { grid-template-columns: 1fr; }
   .format-notice { grid-template-columns: 1fr; gap: 10px; }
+  .attention-banner { grid-template-columns: 1fr; gap: 16px; }
 }
 
 @media (max-width: 560px) {
   .hero-inner, .section, .subhero-inner, .footer-inner { width: calc(100% - 32px); }
   .fact-strip { width: calc(100% - 32px); }
+  .attention-banner { width: calc(100% - 32px); padding: 20px; }
   .hero h1 { font-size: 7.7vw; }
   .formal-title { font-size: 1.58rem; }
   .hero-actions .button { width: 100%; }

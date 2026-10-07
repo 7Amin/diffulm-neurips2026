@@ -11,7 +11,7 @@
 
       const remaining = deadline - now;
       if (remaining <= 0) {
-        output.textContent = 'Submission deadline has passed';
+        output.textContent = countdown.dataset.passed || 'Submission deadline has passed';
         return;
       }
 

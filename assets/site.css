@@ -582,3 +582,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
 @media (max-width: 560px) {
   .reviewer-list { grid-template-columns: 1fr; }
 }
+.reviewer-name { min-width: 0; }
+.reviewer-letter { flex: none; margin-left: auto; padding: 2px 8px; color: var(--teal); border: 1px solid rgba(31, 119, 111, .35); border-radius: 999px; font-size: .7rem; font-weight: 750; text-decoration: none; }
+.reviewer-letter:hover, .reviewer-letter:focus-visible { color: var(--white); background: var(--teal); border-color: var(--teal); }

@@ -608,3 +608,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
 @media (max-width: 560px) {
   .hero-announce { border-radius: 14px; }
 }
+
+.nav-link--closed s { text-decoration-thickness: 2px; text-decoration-color: var(--gold); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
